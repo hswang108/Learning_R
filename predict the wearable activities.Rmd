@@ -1,0 +1,289 @@
+Practicle Machine learning project – Predict the wearable activities
+========================================================
+
+Introduction
+
+Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement – a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it.
+
+In this project, the goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: [http://groupware.les.inf.puc-rio.br/har](http://groupware.les.inf.puc-rio.br/har) (see the section on the Weight Lifting Exercise Dataset).
+
+Data
+
+The training data for this project are available here:
+
+[https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv](https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv)
+
+The test data are available here:
+
+[https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv](https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv)
+
+The data for this project come from this source: [http://groupware.les.inf.puc-rio.br/har](http://groupware.les.inf.puc-rio.br/har).
+
+The data can be downloaded using the below R script.
+
+
+
+```{r}
+downloadFiles<-function(dataURL="", destF="t.csv"){
+        if(!file.exists(destF)){
+            download.file(dataURL, destF, method="wget")
+        }else{
+            message("data already downloaded.")
+        }
+    }
+```
+
+loading training and testing dataset
+
+```{r}
+trainURL<-"https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+testURL <-"https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+```
+
+Download traninig files 
+```{r}
+downloadFiles(trainURL, "pml-training.csv")
+```
+
+Download Test File
+```{r}
+downloadFiles(testURL, "pml-test.csv")
+```
+
+read train and test files into R
+```{r}
+training <- read.csv("pml-training.csv",na.strings=c("NA",""))
+testing <-read.csv("pml-test.csv",na.strings=c("NA",""))
+```
+
+First look of training data
+
+```{r}
+dim(training)
+```
+
+
+
+
+
+
+```{r}
+str(training)
+```
+
+outocme is "classe" variable
+
+```{r}
+table(training$classe)
+```
+
+
+Removing missing values 
+
+Get only those variables, for which there is no missing value 
+```{r}
+var <- names(training)[apply(training,2,function(x) table(is.na(x))[1]==19622)]
+```
+
+```{r}
+length(names(training))
+```
+
+
+```{r}
+length(var)
+```
+
+Build the training dataset from these predictor variables. 
+```{r}
+train2<- training[,var]
+```
+
+test dataset no classe variable
+```{r}
+test2 <- testing[,c(var[-length(var)],names(testing)[length(testing)])] 
+```
+
+Discard unuseful predictors. Consider only numeric variables from HAR sensor
+
+```{r}
+removeIndex <- grep("timestamp|X|user_name|new_window|num_window",names(train2))
+train3 <- train2[,-c(removeIndex, length(train2))]
+test3  <- test2[,-c(removeIndex, length(test2))]
+```
+
+
+
+
+```{r echo=FALSE}
+library(caret)
+```
+
+Check the near Zero covariates and correlation matrix removing zero covariates 
+```{r}
+nzv <- nearZeroVar(train3, saveMetrics=TRUE)
+```
+
+```{r}
+length(names(train3))
+```
+
+```{r}
+dim(nzv)
+```
+
+```{r}
+head(nzv)
+```
+
+
+Find the variables which have very less covariance (less significant)
+```{r}
+nzv[nzv$nzv,]
+```
+
+
+no rows implies highly correlated covariates.
+
+Generate Correlation plot
+```{r}
+library(corrplot)
+corrM <- cor(train3)
+corrplot(corrM, method="circle",tl.cex=0.5)
+```
+
+
+Remove highly correlated variables
+
+highly correlated variables
+```{r}
+highCorr <- findCorrelation(corrM, cutoff = .75); length(highCorr)     
+```
+
+Build a training set by removing highly correlated variables. 
+```{r}
+train4 <- cbind(classe=train2$classe,train3[,-highCorr])    
+```
+
+Select the same columns in test dataset
+```{r}
+test4 <- test3[, -highCorr]        # dataframe of test predictors
+```
+
+Split training dataset into training/testing for model evaulation
+```{r}
+set.seed(1234)
+inTrain = createDataPartition(train4$classe, p = 3/4)[[1]]
+trainPart = train4[ inTrain,]
+testPart =  train4[-inTrain,]
+```
+
+
+
+Use Random Forest algorithm for prediction
+
+```{r}
+library(randomForest);
+```
+
+
+```{r}
+rfModel <- randomForest(classe ~ .,data = trainPart,importance = TRUE,ntrees = 500)
+print(rfModel)
+```
+
+
+Plot the model 
+```{r}
+par(mar=c(3,4,4,4))                               
+plot(rfModel) 
+```
+
+Output Parameters available from the fitted model
+```{r}
+names(rfModel)
+```
+
+
+Confusion Matrix
+```{r}
+rfModel$confusion
+```
+
+
+```{r}
+varImpPlot(rfModel,cex=.5) 
+```
+
+
+Test sample and cross validation
+
+Predict the output
+```{r}
+out.test <- predict(rfModel,testPart) 
+```
+
+Compare the results
+```{r}
+table(testPart$classe, out.test)
+```
+
+
+```{r}
+out.test<-predict(rfModel,test4) 
+out.test[1:20]
+```
+
+
+k fold cross validataion, which takes too much computing time
+
+
+Preprocessing the data. 
+
+PCA with threshold 0.80, two misclassified in the first 20.
+
+```{r}
+preProc <- preProcess(trainPart[,-1], method="pca", thresh=0.8)
+trainPC <- predict(preProc, trainPart[,-1])
+```
+
+Generate randomForest Model
+```{r}
+modPC   <- randomForest(trainPart$classe~., data=trainPC, importance=TRUE, ntree=10)
+```
+
+Apply same pre processing in test dataset
+```{r}
+testPC  <- predict(preProc, testPart[,-1])
+```
+
+Predict results 
+```{r}
+out.testPC <-predict(modPC, newdata=testPC)
+```
+
+
+```{r}
+table(out.testPC, testPart$classe)
+```
+
+Save the output 
+
+```{r}
+answers<- as.vector(out.test[1:20]);answers
+```
+
+
+```{r}
+pml_write_files = function(x){
+  n = length(x)
+  for(i in 1:n){
+    filename = paste0("problem_id_",i,".txt")
+    write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
+  }
+}
+pml_write_files(answers)
+```
+
+
+
