@@ -1,5 +1,5 @@
 ---
-title       : Learnig R
+title       : Learning R
 subtitle    : 
 author      : Vikas Gupta
 job         : 
