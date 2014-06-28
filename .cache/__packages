@@ -1,0 +1,5 @@
+base
+DBI
+devtools
+RSQLite
+slidify
