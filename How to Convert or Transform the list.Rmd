@@ -1,0 +1,57 @@
+How to convert or transform the list
+========================================================
+
+Input List 
+```{r}
+L <- list(A = 25, B = 22, C = 25, D = 26);L
+```
+
+Expected Output 
+
+```
+$25
+[1] "A" "C"
+
+$22
+[1] "B"
+
+$26
+[1] "D"
+```
+
+
+
+```{r}
+split(names(L), unlist(L))
+```
+
+
+Split - Divide into groups and re-assemble
+
+
+```{r}
+names(L)
+```
+
+
+unlist - flatten lists 
+Given a list structure x, unlist simplifies it to produce a vector which contains all the atomic components which occur in x.
+
+```{r}
+unlist(L)
+```
+
+
+```{r}
+str(unlist(L))
+```
+
+
+TODO
+You could also try with(stack(L), split(as.character(ind), values)).
+```{r}
+with(stack(L), split(as.character(ind), values))
+```
+
+
+
