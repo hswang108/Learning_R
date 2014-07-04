@@ -1,0 +1,267 @@
+ Topicmodeling: Illustrative example: Abstracts of JSS papers
+========================================================
+Get Data
+```{r}
+#install.packages("corpus.JSS.papers", repos = "http://datacube.wu.ac.at/", type = "source")
+data("JSS_papers", package = "corpus.JSS.papers")
+```
+For reproducibility of results we use only abstracts published up to 2010-08-05 and omit those containing non-ASCII characters in the abstracts.
+
+
+```{r}
+JSS_papers <- JSS_papers[JSS_papers[,"date"] < "2010-08-05",];dim(JSS_papers)
+JSS_papers <- JSS_papers[sapply(JSS_papers[, "description"],Encoding) == "unknown",];dim(JSS_papers)
+```
+
+
+
+
+```{r}
+dim(JSS_papers)
+prod(dim(JSS_papers))
+```
+
+tm -- 
+
+
+The final data set contains 348 documents. Before analysis we transform it to a "Corpus" using package tm. 
+HTML markup in the abstracts for greek letters, subscripting, etc., is removed using package XML
+
+```{r}
+library("tm")
+library("XML")
+```
+
+```{r}
+remove_HTML_markup <- function(s) tryCatch({
+ doc <- htmlTreeParse(paste("<!DOCTYPE html>", s), asText = TRUE, trim = FALSE)
+ xmlValue(xmlRoot(doc))
+ }, error = function(s) s)
+```
+
+```{r}
+?Corpus
+?VectorSource
+```
+
+```{r}
+JSS_papers[, "description"][1]
+sapply(JSS_papers[, "description"][1],remove_HTML_markup)
+
+
+VectorSource(sapply(JSS_papers[, "description"][1],remove_HTML_markup))
+
+
+c  <- Corpus(VectorSource(sapply(JSS_papers[, "description"][1],remove_HTML_markup)));c
+
+
+```
+
+
+```{r}
+corpus <- Corpus(VectorSource(sapply(JSS_papers[, "description"],
+                                     remove_HTML_markup)));corpus
+```
+
+
+```{r}
+class(corpus)
+mode(corpus)
+```
+
+The corpus is exported to a document-term matrix using function DocumentTermMatrix()
+from package tm. The terms are stemmed and the stop words, punctuation, numbers and
+terms of length less than 3 are removed using the control argument. (We use a C locale for reproducibility.)
+
+```{r}
+Sys.setlocale("LC_COLLATE", "C")
+```
+
+
+
+
+```{r}
+JSS_dtm <- DocumentTermMatrix(corpus,
+ control = list(stemming = TRUE, stopwords = TRUE, minWordLength = 3,
+ removeNumbers = TRUE, removePunctuation = TRUE))
+```
+
+```{r}
+str(JSS_dtm)
+```
+
+```{r}
+names(JSS_dtm)
+```
+
+```{r}
+class(JSS_dtm)
+```
+
+```{r}
+mode(JSS_dtm)
+```
+
+Document term Martix
+```{r}
+JSS_dtm # all documents & All (4289) terms 
+JSS_dtm[1,] # 1st Document and all (4289) terms
+JSS_dtm[,1] # All documents and First term
+```
+
+```{r}
+JSS_dtm$nrow; #348
+JSS_dtm$ncol # 4289
+length(JSS_dtm$i) # 19509
+length(JSS_dtm$j) # 19509
+length(JSS_dtm$v) # 19609
+```
+Document
+```{r}
+range(JSS_dtm$i)  # 1 - 348
+```
+Term
+```{r}
+range(JSS_dtm$j)  # 1 - 4289
+```
+Frequency
+```{r}
+range(JSS_dtm$v)  # 1 - 14
+```
+```
+
+Number of terms whose frequency is 0
+```{r}
+sum(JSS_dtm$v == 0)
+```
+
+Number of terms whose frequency is 1
+```{r}
+sum(JSS_dtm$v == 1)
+```
+
+Number of terms with frequency 13
+```{r}
+sum(JSS_dtm$v == 13)
+```
+
+Number of terms with frequency 14 
+```{r}
+sum(JSS_dtm$v == 14)
+```
+
+plot of frequencies
+```{r}
+qplot(JSS_dtm$v)
+```
+
+e mean term frequency-inverse document frequency (tf-idf) over documents containing this term is used to select the vocabulary. This measure allows to omit terms which have low frequency as well as those occurring in many documents. We only include terms which have a tf-idf value of at least 0.1 which is a bit more than the median and ensures that the very frequent terms are omitted.
+
+slam: Sparse Lightweight Arrays and Matrices
+
+Data structures and algorithms for sparse arrays and matrices, based on index arrays and simple triplet representations, respectively.
+
+Load Slam package
+```{r}
+library("slam")
+```
+
+
+`col_sums`: Form row and column sums and means for sparse arrays (currently `simple_triplet_matrix` only).
+
+```{r}
+?col_sums
+```
+
+rows is the documents 
+columns are the terms 
+
+Gives terms and their frequencies
+```{r}
+JSS_dtm$ncol #4289
+length(col_sums(JSS_dtm)) #4289
+length(JSS_dtm$j) #19509
+length(JSS_dtm$v) #19509
+JSS_dtm$nrow #348
+JSS_dtm
+```
+
+```{r}
+head(col_sums(JSS_dtm))
+```
+
+```{r}
+str(col_sums(JSS_dtm))
+```
+
+```{r}
+class(col_sums(JSS_dtm))
+```
+
+Distribution of term frequencies - Skewed
+```{r}
+summary(col_sums(JSS_dtm))
+qplot(col_sums(JSS_dtm))
+```
+
+The mean term frequency-inverse document frequency (tf-idf) over documents containing this term is used to select the vocabulary. This measure allows to omit terms which have low frequency as well as those occurring in many documents. We only include terms which have a tf-idf value of at least 0.1 which is a bit more than the median and ensures that the very frequent terms are omitted.
+
+```{r}
+term_tfidf <-
+ tapply(JSS_dtm$v/row_sums(JSS_dtm)[JSS_dtm$i], 
+        JSS_dtm$j, mean) * log2(nDocs(JSS_dtm)/col_sums(JSS_dtm > 0))
+```
+
+```{r}
+?tapply
+```
+
+```{r}
+str(term_tfidf)
+length(term_tfidf)  # 4289
+class(term_tfidf) 
+#attributes(term_tfidf)
+head(term_tfidf)
+```
+
+
+Distribution - Slightly less skewed
+```{r}
+summary(term_tfidf)
+qplot(term_tfidf)
+```
+
+```{r}
+dim(JSS_dtm)  # 348 4289
+length(term_tfidf)  # 4289
+sum(term_tfidf >= 0.1) # 2086
+
+JSS_dtm <- JSS_dtm[,term_tfidf >= 0.1];
+JSS_dtm$nrow
+JSS_dtm <- JSS_dtm[row_sums(JSS_dtm) > 0,]
+JSS_dtm$nrow
+summary(col_sums(JSS_dtm))
+JSS_dtm
+```
+
+
+```{r}
+summary(col_sums(JSS_dtm))  # 1 - 47 
+qplot(col_sums(JSS_dtm))
+```
+
+```{r}
+library("topicmodels")
+
+
+
+
+```
+
+
+
+
+
+
+
+
