@@ -1,0 +1,143 @@
+Human Activity Recognition Using Smartphones
+========================================================
+http://rpubs.com/wangwf/19053
+
+One of the most exciting areas in all of data science right now is wearable computing - see for example this article.
+
+Data set information was download from [http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones](http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones). 
+
+"The experiments have been carried out with a group of 30 volunteers within an age bracket of 19-48 years. Each person performed six activities (WALKING, WALKING UPSTAIRS, WALKING DOWNSTAIRS, SITTING, STANDING, LAYING) wearing a smartphone (Samsung Galaxy S II) on the waist. Using its embedded accelerometer and gyroscope, we captured 3-axial linear acceleration and 3-axial angular velocity at a constant rate of 50Hz. The experiments have been video-recorded to label the data manually. The obtained dataset has been randomly partitioned into two sets, where 70% of the volunteers was selected for generating the training data and 30% the test data. The sensor signals (accelerometer and gyroscope) were pre-processed by applying noise filters and then sampled in fixed-width sliding windows of 2.56 sec and 50% overlap (128 readings/window). The sensor acceleration signal, which has gravitational and body motion components, was separated using a Butterworth low-pass filter into body acceleration and gravity. The gravitational force is assumed to have only low frequency components, therefore a filter with 0.3 Hz cutoff frequency was used. From each window, a vector of features was obtained by calculating variables from the time and frequency domain.”
+
+For each record in the raw dataset it is provided:
+
+
+```
+* Triaxial acceleration from the accelerometer (total acceleration) and the estimated body acceleration.
+* Triaxial Angular velocity from the gyroscope.
+* A 561-feature vector with time and frequency domain variables.
+* Its activity label.
+* An identifier of the subject who carried out the experiment.
+```
+
+Step#1 download and unzip files
+
+
+```{r}
+downloadFiles <- function(dataURL = "", destF = "t.csv") {
+    if (!file.exists(destF)) {
+        download.file(dataURL, destF, method = "wget")
+    } else {
+        message("data already downloaded.")
+    }
+}
+```
+
+```{r}
+dataURL = "http://archive.ics.uci.edu/ml/machine-learning-databases/00240/UCI%20HAR%20Dataset.zip"
+destF = "UCI HAR Dataset.zip"
+downloadFiles(dataURL,destF)
+
+```
+
+```{r}
+if (!file.exists("UCI HAR Dataset")) unzip(destF)
+```
+
+```{r}
+system("ls")
+```
+
+
+```{r}
+nsampleSize = -1L
+train <- readData("UCI_HAR_Dataset/train", "train", nsampleSize)
+test <- readData("UCI_HAR_Dataset/test", "test", nsampleSize)
+```
+
+```{r}
+train <- transform(train, subjectID = factor(subjectID), activityID = factor(activityID))
+test <- transform(test, subjectID = factor(subjectID), activityID = factor(activityID))
+
+train$partition = "train"
+test$partition = "test"
+samsungData <- rbind(train, test)
+summary(samsungData$subjectID)
+```
+
+
+This function loads a file <f> from a zip archive <zipfile>
+Prints a message with the indented filename <f>
+```{r}
+load.with.msg <- function (zipfile, f) {
+    message(sprintf("    \"%s\"", f))
+    df <- read.table(unz(zipfile, f))
+    df
+}
+```
+
+```{r}
+# Local file to store the compressed data
+raw.data.file <- "UCI_HAR_Dataset.zip"
+
+```
+
+
+
+############################################################
+# Loading data from zip file                               # 
+############################################################
+```{r}
+message("\nLoading metadata...")
+activity_labels <- load.with.msg(raw.data.file, zfilename.activity_labels)
+features <- load.with.msg(raw.data.file, zfilename.features)
+
+# Load training data
+message("Loading training data (can take some time...)")
+data.train <- lapply(load.list.train, 
+                     function(f) load.with.msg(raw.data.file, f))
+
+
+message("Loading test data (can take some time...)")
+# Load test data
+data.test <- lapply(load.list.test, 
+                     function(f) load.with.msg(raw.data.file, f))
+
+# Check if loaded trainign and test dataframes have same number of cols 
+assertion.datacols <- identical(lapply(data.train, FUN=ncol), 
+                                lapply(data.test, FUN=ncol))
+
+message(sprintf("Checking if training and test data sets %s: %s", 
+                "have same number of columns", 
+                assertion.datacols))
+
+if (!assertion.datacols) {
+    stop("Training and test data sets must have same number of columns!")
+}
+```
+
+
+
+
+
+
+
+
+
+```{r}
+assertion.datanames <- identical(sort(names.train), sort(names.test))
+
+message(sprintf("Checking if same files exist for training and test data: %s",
+                assertion.datanames))
+
+if (!assertion.datanames) {
+    stop("Training and test data must have same file structure!")
+}
+
+```
+
+
+
+
+
+
+

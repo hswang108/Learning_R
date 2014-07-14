@@ -1,0 +1,34 @@
+R Data Mining: Decision Trees 
+========================================================
+
+
+```{r}
+library("party")
+```
+
+```{r}
+str(iris)
+```
+
+Call function `ctree` to build a decision tree. The first parameter is a formula, which defines a target variable and a list of independent variables.
+
+```{r}
+iris_ctree <- ctree(Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width, data=iris)
+```
+
+
+```{r}
+print(iris_ctree)
+```
+
+
+```{r}
+plot(iris_ctree)
+```
+
+
+
+```{r}
+plot(iris_ctree, type="simple")
+```
+

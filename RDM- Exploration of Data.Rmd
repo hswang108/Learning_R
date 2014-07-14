@@ -1,0 +1,113 @@
+R Data Mining: Exploration of Data 
+========================================================
+
+
+```{r}
+dim(iris)
+```
+
+Variable names or column names
+
+
+```{r}
+names(iris)
+```
+
+
+Structure 
+```{r}
+str(iris)
+```
+
+Attributes 
+```{r}
+attributes(iris)
+```
+
+Get first 5 rows 
+
+```{r}
+iris[1:5,]
+```
+
+Get sepal length of first 10 rows 
+
+```{r}
+iris[1:10,"Sepal.Length"]
+iris$Sepal.Length[1:10]
+```
+
+Distribution of every variable
+
+```{r}
+summary(iris)
+```
+
+Frequency
+
+```{r}
+table(iris$Species)
+```
+
+Pie Chart 
+
+```{r}
+pie(table(iris$Species))
+```
+
+Variance of Sepal.length
+```{r}
+var(iris$Sepal.Length)
+```
+
+Covariance of two variables. 
+```{r}
+cov(iris$Sepal.Length, iris$Petal.Length)
+```
+
+Correlation of two variables.
+```{r}
+cor(iris$Sepal.Length, iris$Petal.Length)
+```
+
+
+Histogram 
+```{r}
+hist(iris$Sepal.Length)
+```
+
+
+Denstity plot 
+
+```{r}
+plot(density(iris$Sepal.Length))
+```
+
+Scatter plot   
+```{r}
+plot(iris$Sepal.Length, iris$Sepal.Width)
+```
+
+Pair plot
+
+```{r}
+plot(iris)
+```
+
+or
+```{r}
+pairs(iris)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+

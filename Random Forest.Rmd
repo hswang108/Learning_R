@@ -1,0 +1,88 @@
+Random Forest
+========================================================
+
+Package randomForest: There are two limitations with function randomForest(). First, it cannot handle data with missing values, and users have to impute data before feeding them into the function. Second, there is a limit of 32 to the maximum number of levels of each categorical attribute. Attributes with more than 32 levels have to be transformed first before using randomForest().
+
+
+An alternative way to build a random forest is to use function cforest() from package party, which is not limited to the above maximum levels. However, generally speaking, categorical variables with more levels will make it require more memory and take longer time to build a random forest.
+
+split the `iris` dataset into training and testing datasets.
+
+```{r}
+ind  <- sample(2, nrow(iris), replace=T, prob=c(0.7,0.3))
+trainData  <- iris[ind ==1, ] 
+testData  <- iris[ind ==2, ]
+```
+
+Load `randomForest` package to train a forest.
+
+```{r}
+library(randomForest)
+rf  <- randomForest(Species ~ ., data = trainData, ntree=100,
+                    proximity=TRUE)
+table(predict(rf), trainData$Species)
+print(rf)
+```
+
+
+```{r}
+attributes(rf)
+```
+
+plot the error rates with number of trees
+
+```{r}
+plot(rf)
+```
+
+importance of variables can be obtained form the funcitons `importance()` and `varImpPlot()`.
+
+
+
+```{r}
+importance(rf)
+```
+
+
+
+```{r}
+varImpPlot(rf)
+```
+
+predit the data in test dataset
+
+```{r}
+irisPred  <- predict(rf, newdata=testData)
+table(irisPred, testData$Species)
+```
+
+
+
+```{r}
+plot(margin(rf, testData$Species))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

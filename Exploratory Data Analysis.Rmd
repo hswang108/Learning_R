@@ -1,0 +1,74 @@
+Exploratory Data Analysis 
+========================================================
+
+```{r}
+library(LearnEDA)
+library(RSADBE)
+```
+
+```{r}
+rm(list = ls())
+```
+
+
+
+```{r}
+data(TheWALL)
+```
+
+
+
+```{r}
+?TheWALL
+```
+
+```{r}
+TheWALL$Score
+```
+
+
+```{r}
+quantile(TheWALL$Score)
+```
+
+```{r}
+diff(quantile(TheWALL$Score))
+```
+
+
+```{r}
+quantile(TheWALL$Score, seq(0,1,0.1))
+```
+
+
+
+```{r}
+diff(quantile(TheWALL$Score, seq(0,1,0.1)))
+```
+
+```{r}
+attach(TheWALL)
+table(HA_Ind)
+```
+
+
+```{r}
+boxplot(Score ~ HA_Ind)
+```
+
+
+```{r}
+boxplot(Score ~ HA_Ind, subset = (Score < 200), data = TheWALL)
+```
+
+
+
+```{r}
+fivenum(TheWALL$Score)
+```
+
+
+
+
+
+
