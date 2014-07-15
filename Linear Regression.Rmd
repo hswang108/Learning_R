@@ -1,0 +1,100 @@
+Linear Regression
+========================================================
+
+
+Create and Load data  
+```{r}
+year  <- rep(2008:2010, each=4)
+quarter  <- rep(1:4, 3)
+cpi  <- c(162.2, 164.6, 166.5, 166.0,
+          166.2, 167.0, 168.6, 169.5,
+          171.0, 172.1, 173.3, 174.0)
+plot(cpi, xaxt="n", ylab="CPI", xlab="")
+# draw x-axis
+axis(1, labels=paste(year,quarter,sep="Q"), at=1:12, las=3)
+```
+
+Check correlation between CPI and other variable
+
+```{r}
+cor(year, cpi)
+```
+
+
+```{r}
+cor(quarter, cpi)
+```
+
+build linear regression model with `lm()` function on this data, using year and quarter as predicators and CPI as response.
+
+```{r}
+fit  <- lm(cpi ~ year + quarter)
+fit
+```
+
+Predict CPI in 2011
+
+```{r}
+(cpi2011 <- fit$coefficients[[1]] + fit$coefficients[[2]]*2011 +
+   fit$coefficients[[3]]*(1:4))
+```
+
+more details about the model .
+
+```{r}
+attributes(fit)
+```
+
+```{r}
+fit$coefficients
+```
+
+The differences between observed values and fitted values can be obtained with function `residuals()`.
+
+```{r}
+residuals(fit)
+```
+
+```{r}
+summary(fit)
+```
+
+plot the model 
+
+
+```{r}
+par(mfrow=c(2,2))
+plot(fit)
+```
+
+
+pltot the model in 3D
+-------
+
+
+- `scatterplot3d()` creates a 3D scatter plot and `plane3d()` draws the fitted plane.
+- Parameter `lab` specifies the number of tickmarks on the x- and y-axes.
+
+```{r}
+par(mfrow=c(1,1))
+library(scatterplot3d)
+s3d  <- scatterplot3d(year, quarter, cpi, highlight.3d=T, 
+                      type="h", lab=c(2,3))
+
+s3d$plane3d(fit)
+```
+
+
+Predict cpi in 2011
+
+```{r}
+data2011  <- data.frame(year=2011, quarter = 1:4)
+cpi2011  <- predict(fit, newdata = data2011)
+style  <- c(rep(1,12), rep(2,4))
+plot(c(cpi, cpi2011), xaxt="n", ylab="CPI", xlab="", pch=style, col=style)
+
+axis(1, at=1:16, las=3,
+     labels=c(paste(year,quarter,sep="Q"), "2011Q1", "2011Q2", "2011Q3", "2011Q4"))
+
+```
+
