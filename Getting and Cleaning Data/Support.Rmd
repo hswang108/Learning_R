@@ -1,0 +1,106 @@
+Kickstarting R - Functions - general
+========================================================
+[Source:](http://cran.r-project.org/doc/contrib/Lemon-kickstart/kr_rfunc.html)
+
+##What are they?##
+
+If you are confused by the very notion of functions (i.e., your entire experience of computing has been pressing simulated buttons with a simulated finger), a function is formally a part of a computer program that performs some specific action, but is not itself a complete executable program. Functions may perform the same things that complete programs do, such as the sort() function in R and a sort program that you might write and compile in C. R has a large number of functions built in, and the user can create their own functions, either by assembling them from existing R functions or writing them in a language like C for which there is an interface to R. Writing and precompiling functions is not a trivial job and is probably beyond what the new user will want to accomplish. The reader is directed to R-exts for an excellent introduction to this topic.
+In R, a function is an object which has the mode function. This means that the R interpreter is able to pass control to the function, along with arguments that may be necessary for the function to accomplish the actions that are desired. The function in turn must correctly perform its task and return control to the interpreter as well as any results which may be stored in other objects. As usual, this explanation will be more or less incomprehensible to some without an example or two. Let's start with the classic hello() function that has been the introduction to programming for so many.
+
+
+```{r}
+rm(list = ls())
+```
+
+
+```{r}
+hello<-function() cat("Hello, world!\n")
+```
+
+```{r}
+hello()
+```
+
+```{r}
+hello<-function() {
+  cat(paste("Hello, ",system("whoami",T),"!\n",sep="",collapse=""))
+  }
+```
+
+```{r}
+hello()
+```
+
+system() is a useful function that passes a command to the operating system. I have assumed a *NIX system here, which when given the command whoami returns the username of the user issuing the command. The T after the command tells system() to return its output, not just the return code, as it would normally return 0. Also notice that because the T is in the place that system() expects it to be, we could leave out the label ("intern") for that argument. Now, what's this paste() function doing in the middle of things? paste() sticks strings together. Without it, cat() would have printed a space between each argument, making the greeting a bit messy. paste() is one of the most useful string formatting tools in R. Here, it has taken three arguments, separated them with nothing, and collapsed them into a single string.
+
+Notice that when writing a multiline function, braces {} must be used to enclose the body of the function. So far, we have a function that can display a message and query the operating system for the name of the user. For the majority of functions, one or more values will be returned to the calling program. Here's how to get today's date from a UNIX operating system.
+
+```{r}
+hello<-function() {
+  cat(paste("Hello, ",system("whoami",T),"!\n",sep="",collapse=""))
+	today<-as.list(unlist(strsplit(system("date",T)," ")))
+	names(today)<-c("weekday","month","","day","time","timezone","year")
+	return(today)
+}
+```
+
+
+```{r}
+hello()
+```
+
+The second line of the new function is something you will see quite a bit in R. Three functions are called to get today into the form of a list with six elements.
+
+strsplit is a useful function that breaks strings into smaller pieces at the points where the character(s) in the second argument occur. Here, we've just used a space. This breaks the usual date string into six pieces. However, the pieces are stored as a vector in a list. What we want to do is get the vector out of the list using unlist (we also could have used strsplit(system("date","T")," ")[[1]] which would have "extracted" the vector from the list), then make the vector into a list again, but this time with each element of the vector becoming an element in the list. This allows us to assign names to the elements. Because these six pieces are in a fixed order in most UNIX systems, we can assign names to each piece.
+
+If we were to create the hello function and assign its value to today (and, no, this will not interfere with the today inside the function), we have a useful object that will provide quotidian information.
+
+```{r}
+today<-hello()
+```
+
+
+```{r}
+today$year
+```
+
+
+
+
+
+```{r}
+system("date",T)
+```
+
+
+strsplit is a useful function that breaks strings into smaller pieces at the points where the character(s) in the second argument occur.
+
+Here, we've just used a space. This breaks the usual date string into six pieces. 
+
+```{r}
+strsplit(system("date",T)," ")
+```
+
+However, the pieces are stored as a vector in a list. What we want to do is get the vector out of the list using unlist (we also could have used strsplit(system("date","T")," ")[[1]] which would have "extracted" the vector from the list),
+
+```{r}
+unlist(strsplit(system("date",T)," "))
+```
+
+then make the vector into a list again, but this time with each element of the vector becoming an element in the list.
+
+```{r}
+as.list(unlist(strsplit(system("date",T)," ")))
+```
+
+
+```{r}
+today  <- as.list(unlist(strsplit(system("date",T)," ")))
+names(today)<-c("weekday","month","","day","time","timezone","year")
+today
+```
+
+
+
+
+
