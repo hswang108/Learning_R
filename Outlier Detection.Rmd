@@ -1,23 +1,24 @@
 Outlier Detection
-========================================================
+=====
 
 Outlier detection with the LOF (Local Outlier Factor) algorithm.
 
-
 The LOF algorithm
------------------
-LOF (Local Outlier Factor) is an algorithm for identifying density-based local outliers [Breunig et al., 2000]. With LOF, the local density of a point is compared with that of its neighbors. If the former is significantly lower than the latter (with an LOF value greater than one), the point is in a sparser region than its neighbors, which suggests it be an outlier.
-
+-----
+`LOF` (Local Outlier Factor) is an algorithm for identifying density-based local outliers [Breunig et al., 2000]. With LOF, the local density of a point is compared with that of its neighbors. If the former is significantly lower than the latter (with an LOF value greater than one), the point is in a sparser region than its neighbors, which suggests it be an outlier.
 
 ```{r}
 summary(cars)
 ```
+
 Function `lofactor(data, k)` in packages `DMwR` and `dprep` calculates local outlier factors using the `LOF algorithm`, where `k` is the `number of neighbors` used in the calculation of the local outlier factors.
 
 Calculate Outlier scores.
-----------
+----
 
 DMwR: Functions and data for the book "Data Mining with R"
+
+This package includes functions and data accompanying the book "Data Mining with R, learning with case studies" by Luis Torgo, published by CRC Press (ISBN: 9781439810187)
 
 ```{r}
 library(DMwR)
