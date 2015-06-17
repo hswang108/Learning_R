@@ -1,5 +1,8 @@
 How to create a new variable based on two categorical variables
-========================================================
+====
+
+In statistics, a `categorical variable` is a variable that can take on one of a limited, and usually fixed, number of possible values, thus assigning each individual to a particular group or "category."
+
 
 I have two categorical variables a & b.
 
@@ -8,9 +11,7 @@ a = sample(0:1, size=10, replace=T )
 b = sample(0:1, size=10, replace=T )
 ```
 
-
 I want to create a new variable c, whose values depend on a & b in such a way:
-
 
 ```{r}
 c = vector(length=10)
