@@ -1,11 +1,21 @@
 Decision Trees with Package `rpart`
-========================================================
+====
 
-Package `rpart` [Therneau et al., 2010] is used to build a decision tree on the bodyfat data . Function rpart() is used to build a decision tree, and the tree with the minimum prediction error is selected. After that, it is applied to new data to make prediction with function predict().
+Package `rpart` is used to build a decision tree on the bodyfat data . Function rpart() is used to build a decision tree, and the tree with the minimum prediction error is selected. After that, it is applied to new data to make prediction with function predict().
+
+
+
+mboost package - Model-Based Boosting
+
+bodyfat - For 71 healthy female subjects, body fat measurements and several anthropometric measurements are available for predictive modelling of body fat.
+
+
 ```{r}
+#install.packages('mboost', dep=T)
 library(mboost)
 data("bodyfat", package = "TH.data")
 ```
+
 
 ```{r}
 dim(bodyfat)
@@ -18,11 +28,11 @@ attributes(bodyfat)
 ```{r}
 bodyfat[1:5,]
 ```
-split the data into training and test datasets. 
-
-build a decision tree on the training dataset.
 
 
+Split the data into training and test datasets. 
+
+Build a decision tree on the training dataset.
 ```{r}
 set.seed(1234)
 ind  <- sample(2,nrow(bodyfat), replace=T, prob=c(0.7, 0.3))
@@ -31,11 +41,31 @@ bodyfat.test  <- bodyfat[ind == 2,]
 ```
 
 
-train a decision tree. 
+Train a decision tree. 
+
+rpart - Recursive Partitioning and Regression Trees
+
+`Recursive partitioning` is a statistical method for multivariable analysis. Recursive partitioning creates a decision tree that strives to correctly classify members of the population by splitting it into sub-populations based on several dichotomous (different) independent variables. The process is termed recursive because each sub-population may in turn be split an indefinite number of times until the splitting process terminates after a particular stopping criterion is reached.
+
+Regression Trees - 
+In simple linear regression, a real-valued dependent variable Y is modeled as a linear function of a real-valued independent variable X plus noise:
+
+In multiple regression, we let there be multiple independent variables
+
+Linear regression is a **global model**, where there is a single predictive formula holding over the entire data-space. When the data has lots of features which interact in complicated, nonlinear ways, assembling a single global model can be very difficult, and hopelessly confusing when you do succeed. An alternative approach to nonlinear regression is to sub-divide, or partition, the space into smaller regions, where the interactions are more manageable. We then partition the sub-divisions again — this is called **recursive partitioning** — until finally we get to chunks of the space which are so tame that we can fit simple models to them. The **global model** thus has two parts: one is just the recursive partition, the other is a simple model for each cell of the partition.
+
+Prediction trees use the tree to represent the recursive partition. Each of the
+**terminal nodes**, or **leaves**, of the tree represents a cell of the partition, and has
+attached to it a simple model which applies in that cell only.
+
+
+
+> control - a list of options that control details of the rpart algorithm `??rpart.control`
+> minsplit  - the minimum number of observations that must exist in a node in order for a split to be attempted.
+
 ```{r}
 library(rpart)
-myFormula  <- DEXfat ~ age + waistcirc + waistcirc + 
-  elbowbreadth + kneebreadth
+myFormula  <- DEXfat ~ age + waistcirc + waistcirc + elbowbreadth + kneebreadth
 bodyfat_rpart <- rpart(myFormula, data = bodyfat.train,
                        control = rpart.control(minsplit = 10))
 ```
@@ -43,12 +73,13 @@ bodyfat_rpart <- rpart(myFormula, data = bodyfat.train,
 
 ```{r}
 attributes(bodyfat_rpart)
+##??rpart.object
 ```
 
+`cptable` - a matrix of information on the optimal prunings based on a complexity parameter.
 
 ```{r}
 print(bodyfat_rpart$cptable)
-View(bodyfat_rpart$cptable)
 ```
 
 
@@ -56,20 +87,21 @@ View(bodyfat_rpart$cptable)
 print(bodyfat_rpart)
 ```
 
-Plot the tree 
-
+## Plot the tree 
 ```{r}
 plot(bodyfat_rpart)
 text(bodyfat_rpart, use.n=T)
 ```
 
-select the tree with minimum prediction error
+Select the tree with minimum prediction error
 ```{r}
 opt  <- which.min(bodyfat_rpart$cptable[,"xerror"])
 cp  <- bodyfat_rpart$cptable[opt, "CP"]
 bodyfat_prune  <- prune(bodyfat_rpart, cp = cp)
 print(bodyfat_prune)
+#print(bodyfat_rpart)
 ```
+?prune -  Cost-complexity Pruning of an Rpart Object - Determines a nested sequence of subtrees of the supplied `rpart` object by recursively snipping off the least important splits, based on the complexity parameter (cp)
 
 
 
@@ -78,7 +110,7 @@ plot(bodyfat_prune)
 text(bodyfat_prune, use.n = T)
 ```
 
-use the selected tree to make prediciton and compared with actual labels. 
+Use the selected tree to make `prediciton` and compared with actual labels. 
 
 
 ```{r}
@@ -89,6 +121,6 @@ plot(DEXfat_pred ~ DEXfat, data = bodyfat.test, xlab="Observed",
 abline(a=0, b=1)
 ```
 
-
-
-
+References - 
+- https://en.wikipedia.org/wiki/Recursive_partitioning
+- http://www.stat.cmu.edu/~cshalizi/350-2006/lecture-10.pdf
