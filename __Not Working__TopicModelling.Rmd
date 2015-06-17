@@ -154,7 +154,8 @@ sum(JSS_dtm$v == 14)
 
 plot of frequencies
 ```{r}
-qplot(JSS_dtm$v)
+#install.packages('ggplot2',dep=T)
+#qplot(JSS_dtm$v)
 ```
 
 e mean term frequency-inverse document frequency (tf-idf) over documents containing this term is used to select the vocabulary. This measure allows to omit terms which have low frequency as well as those occurring in many documents. We only include terms which have a tf-idf value of at least 0.1 which is a bit more than the median and ensures that the very frequent terms are omitted.
@@ -203,7 +204,7 @@ class(col_sums(JSS_dtm))
 Distribution of term frequencies - Skewed
 ```{r}
 summary(col_sums(JSS_dtm))
-qplot(col_sums(JSS_dtm))
+#qplot(col_sums(JSS_dtm))
 ```
 
 The mean term frequency-inverse document frequency (tf-idf) over documents containing this term is used to select the vocabulary. This measure allows to omit terms which have low frequency as well as those occurring in many documents. We only include terms which have a tf-idf value of at least 0.1 which is a bit more than the median and ensures that the very frequent terms are omitted.
@@ -253,13 +254,13 @@ qplot(col_sums(JSS_dtm))
 ```
 
 ```{r}
+#install.packages('topicmodels',dep=T)
 library("topicmodels")
-
-
-
-
 ```
 
+
+TODO: 
+ggplot2 not getting installed
 
 
 
