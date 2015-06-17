@@ -28,6 +28,8 @@ The final data set contains 348 documents. Before analysis we transform it to a 
 HTML markup in the abstracts for greek letters, subscripting, etc., is removed using package XML
 
 ```{r}
+#install.packages('tm', dep=T)
+#install.packages('XML', dep=T)
 library("tm")
 library("XML")
 ```
