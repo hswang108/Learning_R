@@ -2,13 +2,19 @@ Exploratory Data Analysis
 ========================================================
 
 ```{r}
-library(LearnEDA)
+rm(list = ls())
+```
+
+
+```{r}
+#install.packages('LearnEDA',dep=T)
+#install.packages('RSADBE',dep=T)
+
+#library(LearnEDA)  ## Removed form CRAN
 library(RSADBE)
 ```
 
-```{r}
-rm(list = ls())
-```
+
 
 
 
@@ -16,7 +22,9 @@ rm(list = ls())
 data(TheWALL)
 ```
 
+Test centuries of Rahul Dravid
 
+Rahul Dravid has been a modern arthictet of Indian test cricket team. His resilent centuries and holding the wicket at one end of the cricket pitch has earned him the name "The Wall". We analyze his centuries at "Home" and "Away" test matches.
 
 ```{r}
 ?TheWALL
@@ -25,7 +33,6 @@ data(TheWALL)
 ```{r}
 TheWALL$Score
 ```
-
 
 ```{r}
 quantile(TheWALL$Score)
