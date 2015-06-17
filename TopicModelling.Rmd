@@ -260,9 +260,6 @@ library("topicmodels")
 ```
 
 
-TODO: 
-ggplot2 not getting installed
-
 
 
 
