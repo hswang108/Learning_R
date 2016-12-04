@@ -1,5 +1,5 @@
 How to convert or transform the list
-========================================================
+=====
 
 Input List 
 
@@ -114,7 +114,3 @@ with(stack(L), split(as.character(ind), values))
 ## $`26`
 ## [1] "D"
 ```
-
-
-
-
