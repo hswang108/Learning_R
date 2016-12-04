@@ -60,8 +60,8 @@ attached to it a simple model which applies in that cell only.
 
 
 
-> control - a list of options that control details of the rpart algorithm `??rpart.control`
-> minsplit  - the minimum number of observations that must exist in a node in order for a split to be attempted.
+- `control` - a list of options that control details of the rpart algorithm `??rpart.control`
+- `minsplit`  - the minimum number of observations that must exist in a node in order for a split to be attempted.
 
 ```{r}
 library(rpart)
