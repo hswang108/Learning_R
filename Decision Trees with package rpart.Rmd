@@ -1,13 +1,13 @@
 Decision Trees with Package `rpart`
 ====
 
-Package `rpart` is used to build a decision tree on the bodyfat data . Function rpart() is used to build a decision tree, and the tree with the minimum prediction error is selected. After that, it is applied to new data to make prediction with function predict().
+Package `rpart` is used to build a decision tree on the bodyfat data . Function `rpart()` is used to build a decision tree, and the tree with the minimum prediction error is selected. After that, it is applied to new data to make prediction with function `predict()`.
 
 
 
-mboost package - Model-Based Boosting
+`mboost` package - Model-Based Boosting
 
-bodyfat - For 71 healthy female subjects, body fat measurements and several anthropometric measurements are available for predictive modelling of body fat.
+`bodyfat` - For 71 healthy female subjects, body fat measurements and several anthropometric measurements are available for predictive modelling of body fat.
 
 
 ```{r}
@@ -41,9 +41,9 @@ bodyfat.test  <- bodyfat[ind == 2,]
 ```
 
 
-Train a decision tree. 
+#### Train a decision tree. 
 
-rpart - Recursive Partitioning and Regression Trees
+`rpart` - Recursive Partitioning and Regression Trees
 
 `Recursive partitioning` is a statistical method for multivariable analysis. Recursive partitioning creates a decision tree that strives to correctly classify members of the population by splitting it into sub-populations based on several dichotomous (different) independent variables. The process is termed recursive because each sub-population may in turn be split an indefinite number of times until the splitting process terminates after a particular stopping criterion is reached.
 
