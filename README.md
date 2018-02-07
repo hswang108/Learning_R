@@ -1,8 +1,6 @@
 learning_R
 ==========
 
-learning_R
-
 #### Jupyter Notebooks 
 
 1. [Decision Trees with package rpart.ipynb](http://nbviewer.jupyter.org/github/vikasgupta1812/learning_R/blob/master/Decision%20Trees%20with%20package%20rpart.ipynb)
@@ -22,19 +20,17 @@ learning_R
 
 #### R code for book "R and Data Mining: Examples and Case Studies"
 
-Chapter 1:  [ch-introduction.R](./R-code-for-RDataMining-book/ch-introduction.R)
-Chapter 2:  [ch-import-export.R](./R-code-for-RDataMining-book/ch-import-export.R)
-Chapter 3:  [ch-exploration.R](./R-code-for-RDataMining-book/ch-exploration.R)
-Chapter 4:  [ch-decision-trees.R](./R-code-for-RDataMining-book/ch-decision-trees.R)
-Chapter 5:  [ch-regression.R](./R-code-for-RDataMining-book/ch-regression.R)
-
-Chapter 6:  [ch-clustering.R](./R-code-for-RDataMining-book/ch-clustering.R)
-Chapter 7:  [ch-outlier.R](./R-code-for-RDataMining-book/ch-outlier.R)
-Chapter 8:  [ch-time-series.R](./R-code-for-RDataMining-book/ch-time-series.R)
-Chapter 9:  [ch-association.R](./R-code-for-RDataMining-book/ch-association.R)
-Chapter 10: [ch-text-mining.R](./R-code-for-RDataMining-book/ch-text-mining.R)
-
-Chapter 11: [ch-social-network.R](./R-code-for-RDataMining-book/ch-social-network.R)
-Chapter 12: [cs-HPI-forecast.R](./R-code-for-RDataMining-book/cs-HPI-forecast.R)
-Chapter 13: [cs-response-prediction.R](./R-code-for-RDataMining-book/cs-response-prediction.R)
-Chapter 14: [cs-limited-memory.R](./R-code-for-RDataMining-book/cs-limited-memory.R)
+1. [ch-introduction](./R-code-for-RDataMining-book/ch-introduction.R)
+2. [ch-import-export](./R-code-for-RDataMining-book/ch-import-export.R)
+3. [ch-exploration](./R-code-for-RDataMining-book/ch-exploration.R)
+4. [ch-decision-trees](./R-code-for-RDataMining-book/ch-decision-trees.R)
+5. [ch-regression](./R-code-for-RDataMining-book/ch-regression.R)
+6. [ch-clustering](./R-code-for-RDataMining-book/ch-clustering.R)
+7. [ch-outlier](./R-code-for-RDataMining-book/ch-outlier.R)
+8. [ch-time-series](./R-code-for-RDataMining-book/ch-time-series.R)
+9. [ch-association](./R-code-for-RDataMining-book/ch-association.R)
+10. [ch-text-mining](./R-code-for-RDataMining-book/ch-text-mining.R)
+11. [ch-social-network](./R-code-for-RDataMining-book/ch-social-network.R)
+12. [cs-HPI-forecast](./R-code-for-RDataMining-book/cs-HPI-forecast.R)
+13. [cs-response-prediction](./R-code-for-RDataMining-book/cs-response-prediction.R)
+14. [cs-limited-memory](./R-code-for-RDataMining-book/cs-limited-memory.R)
